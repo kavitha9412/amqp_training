@@ -2,10 +2,14 @@ package fr.lernejo.chat;
 
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ChatMessageListener {
-    public static void onMessage(String message) {
-        System.out.println(message);
-    }
+    ChatMessageRepository chat= new ChatMessageRepository();
+    public void onMessage(String var)
+    {
+        chat.addChatMessage(var);
 
+    }
 }
