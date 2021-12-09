@@ -9,22 +9,23 @@ import java.util.Scanner;
 
 @SpringBootApplication
 public class Launcher {
-    public static void main(String[] args)
-    {
-        SpringApplication.run(Launcher.class,args);
-        var ctx = new AnnotationConfigApplicationContext(Launcher.class);
-        RabbitTemplate r = ctx.getBean(RabbitTemplate.class);
-        Scanner in = new Scanner(System.in);
-        String s;
-        System.out.println("Input a message, we will send it for you (q for quit)");
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Launcher.class);
+        RabbitTemplate template = context.getBean(RabbitTemplate.class);
+        template.setRoutingKey("chat_messages");
 
-        do {
-            s = in.nextLine();
-            r.convertAndSend("","chat_messages",s);
-            System.out.println("Message sent,Input a message, we will send it for you (q for quit)");
+        while(true) {
+            System.out.println("Input a message, we will sent it for you (q for quit)");
 
-        }while (!s.equals("q"));
-        ctx.close();
+            String s = scanner.nextLine();
+            if(s.equals("q")) {
+                System.out.println("Bye.");
+                System.exit(0);
+            }
 
+            template.convertAndSend(s);
+            System.out.println("Message sent.");
+        }
     }
 }
